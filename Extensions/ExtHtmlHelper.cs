@@ -33,5 +33,24 @@ namespace Aethelflaed.Extensions
 			}
 			return MvcHtmlString.Create(tag.ToString());
 		}
+
+		public static MvcHtmlString Image<T>(this HtmlHelper<T> helper, string src, string alt)
+		{
+			ExtTagBuilder tag = new ExtTagBuilder("img").With("src", src).And("alt", alt);
+			return MvcHtmlString.Create(tag.ToString(TagRenderMode.SelfClosing));
+		}
+
+		public static MvcHtmlString ImageLink<T>(this HtmlHelper<T> htmlHelper, string imgSrc, string alt, string actionName, string controllerName)
+		{
+			UrlHelper urlHelper = ((Controller)htmlHelper.ViewContext.Controller).Url;
+			string imgtag = htmlHelper.Image(imgSrc, alt).ToString();
+			string url = urlHelper.Action(actionName, controllerName);
+
+
+			ExtTagBuilder imglink = new ExtTagBuilder("a").With("href", url);
+			imglink.InnerHtml = imgtag;
+
+			return MvcHtmlString.Create(imglink.ToString());
+		}
 	}
 }
